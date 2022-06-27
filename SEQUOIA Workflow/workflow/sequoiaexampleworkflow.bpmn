@@ -10,22 +10,17 @@
       <bpmn:outgoing>SequenceFlow_0x6564y</bpmn:outgoing>
     </quantme:quantumCircuitLoadingTask>
     <bpmn:sequenceFlow id="SequenceFlow_0x6564y" sourceRef="Task_0dw496o" targetRef="Task_1qyuei8" />
-    <quantme:quantumCircuitExecutionTask id="Task_1qyuei8" name="Circuit Execution" provider="ibm" qpu="test" shots="1100" programmingLanguage="openqasm">
+    <quantme:quantumCircuitExecutionTask id="Task_1qyuei8" name="Circuit Execution" provider="ibm" qpu="test" shots="1111" programmingLanguage="openqasm">
       <bpmn:incoming>SequenceFlow_0x6564y</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0bkpwmi</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_19r6ece</bpmn:outgoing>
     </quantme:quantumCircuitExecutionTask>
     <bpmn:sequenceFlow id="SequenceFlow_19r6ece" sourceRef="Task_1qyuei8" targetRef="Task_0k5vfu2" />
-    <quantme:readoutErrorMitigationTask id="Task_0k5vfu2" name="Readout Error Mitigation" provider="ibm" qpu="test" calibrationMethod="fullMatrix" mitigationMethod="matrixInversion">
-      <bpmn:incoming>SequenceFlow_19r6ece</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1yekqw0</bpmn:outgoing>
-    </quantme:readoutErrorMitigationTask>
     <bpmn:exclusiveGateway id="ExclusiveGateway_1axmwfm">
       <bpmn:incoming>SequenceFlow_1yekqw0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0l5he8w</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_09rk0yy</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_1yekqw0" sourceRef="Task_0k5vfu2" targetRef="ExclusiveGateway_1axmwfm" />
     <bpmn:sequenceFlow id="SequenceFlow_0l5he8w" sourceRef="ExclusiveGateway_1axmwfm" targetRef="Task_0dlxijg" />
     <bpmn:sequenceFlow id="SequenceFlow_09rk0yy" sourceRef="ExclusiveGateway_1axmwfm" targetRef="Task_0iim6gd" />
     <bpmn:serviceTask id="Task_0iim6gd" name="Optimize">
@@ -36,6 +31,11 @@
     <bpmn:userTask id="Task_0dlxijg" name="Analyze Results">
       <bpmn:incoming>SequenceFlow_0l5he8w</bpmn:incoming>
     </bpmn:userTask>
+    <quantme:readoutErrorMitigationTask id="Task_0k5vfu2" name="Readout Error Mitigation" provider="ibm, ionq" calibrationMethod="fullMatrix" mitigationMethod="matrixInversion">
+      <bpmn:incoming>SequenceFlow_19r6ece</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1yekqw0</bpmn:outgoing>
+    </quantme:readoutErrorMitigationTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1yekqw0" sourceRef="Task_0k5vfu2" targetRef="ExclusiveGateway_1axmwfm" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_12zwm2c">
