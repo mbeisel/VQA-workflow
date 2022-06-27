@@ -5,7 +5,7 @@
       <bpmn:outgoing>SequenceFlow_0sr2iwc</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0sr2iwc" sourceRef="StartEvent_1" targetRef="Task_0dw496o" />
-    <quantme:quantumCircuitLoadingTask id="Task_0dw496o" name="Circuit Generation">
+    <quantme:quantumCircuitLoadingTask id="Task_0dw496o" name="Circuit Generation" url="test.com">
       <bpmn:incoming>SequenceFlow_0sr2iwc</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0x6564y</bpmn:outgoing>
     </quantme:quantumCircuitLoadingTask>
@@ -16,7 +16,7 @@
       <bpmn:outgoing>SequenceFlow_19r6ece</bpmn:outgoing>
     </quantme:quantumCircuitExecutionTask>
     <bpmn:sequenceFlow id="SequenceFlow_19r6ece" sourceRef="Task_1qyuei8" targetRef="Task_0k5vfu2" />
-    <quantme:readoutErrorMitigationTask id="Task_0k5vfu2" name="Readout Error Mitigation" calibrationMethod="fullMatrix" mitigationMethod="matrixInversion">
+    <quantme:readoutErrorMitigationTask id="Task_0k5vfu2" name="Readout Error Mitigation" provider="ibm" qpu="test" calibrationMethod="fullMatrix" mitigationMethod="matrixInversion">
       <bpmn:incoming>SequenceFlow_19r6ece</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1yekqw0</bpmn:outgoing>
     </quantme:readoutErrorMitigationTask>
@@ -39,35 +39,35 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_12zwm2c">
-      <bpmndi:BPMNEdge id="SequenceFlow_0sr2iwc_di" bpmnElement="SequenceFlow_0sr2iwc">
-        <di:waypoint x="188" y="120" />
-        <di:waypoint x="240" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0x6564y_di" bpmnElement="SequenceFlow_0x6564y">
-        <di:waypoint x="340" y="120" />
-        <di:waypoint x="400" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_19r6ece_di" bpmnElement="SequenceFlow_19r6ece">
-        <di:waypoint x="500" y="120" />
-        <di:waypoint x="560" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1yekqw0_di" bpmnElement="SequenceFlow_1yekqw0">
-        <di:waypoint x="660" y="120" />
-        <di:waypoint x="725" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0l5he8w_di" bpmnElement="SequenceFlow_0l5he8w">
-        <di:waypoint x="775" y="120" />
-        <di:waypoint x="840" y="120" />
+      <bpmndi:BPMNEdge id="SequenceFlow_0bkpwmi_di" bpmnElement="SequenceFlow_0bkpwmi">
+        <di:waypoint x="560" y="260" />
+        <di:waypoint x="450" y="260" />
+        <di:waypoint x="450" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_09rk0yy_di" bpmnElement="SequenceFlow_09rk0yy">
         <di:waypoint x="750" y="145" />
         <di:waypoint x="750" y="260" />
         <di:waypoint x="660" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0bkpwmi_di" bpmnElement="SequenceFlow_0bkpwmi">
-        <di:waypoint x="560" y="260" />
-        <di:waypoint x="450" y="260" />
-        <di:waypoint x="450" y="160" />
+      <bpmndi:BPMNEdge id="SequenceFlow_0l5he8w_di" bpmnElement="SequenceFlow_0l5he8w">
+        <di:waypoint x="775" y="120" />
+        <di:waypoint x="840" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1yekqw0_di" bpmnElement="SequenceFlow_1yekqw0">
+        <di:waypoint x="660" y="120" />
+        <di:waypoint x="725" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_19r6ece_di" bpmnElement="SequenceFlow_19r6ece">
+        <di:waypoint x="500" y="120" />
+        <di:waypoint x="560" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0x6564y_di" bpmnElement="SequenceFlow_0x6564y">
+        <di:waypoint x="340" y="120" />
+        <di:waypoint x="400" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0sr2iwc_di" bpmnElement="SequenceFlow_0sr2iwc">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="240" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="102" width="36" height="36" />
