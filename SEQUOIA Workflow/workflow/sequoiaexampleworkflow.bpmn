@@ -10,7 +10,7 @@
       <bpmn:outgoing>SequenceFlow_0x6564y</bpmn:outgoing>
     </quantme:quantumCircuitLoadingTask>
     <bpmn:sequenceFlow id="SequenceFlow_0x6564y" sourceRef="Task_0dw496o" targetRef="Task_1qyuei8" />
-    <quantme:quantumCircuitExecutionTask id="Task_1qyuei8" name="Circuit Execution">
+    <quantme:quantumCircuitExecutionTask id="Task_1qyuei8" name="Circuit Execution" provider="ibm" qpu="test" shots="1100" programmingLanguage="openqasm">
       <bpmn:incoming>SequenceFlow_0x6564y</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0bkpwmi</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_19r6ece</bpmn:outgoing>
