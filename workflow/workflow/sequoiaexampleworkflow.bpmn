@@ -5,7 +5,7 @@
       <bpmn:outgoing>SequenceFlow_0sr2iwc</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0sr2iwc" sourceRef="StartEvent_1" targetRef="Task_0dw496o" />
-    <quantme:quantumCircuitLoadingTask id="Task_0dw496o" name="Circuit Generation" url="test.com">
+    <quantme:quantumCircuitLoadingTask id="Task_0dw496o" name="Circuit Generation" url="quokka">
       <bpmn:incoming>SequenceFlow_0sr2iwc</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0x6564y</bpmn:outgoing>
     </quantme:quantumCircuitLoadingTask>
@@ -52,27 +52,17 @@
                 <camunda:entry key="Content-Type">application/json</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
-            <camunda:inputParameter name="url">http://error-mitigation-service:5000/rem/</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://optimization-service:5000/rem/</camunda:inputParameter>
             <camunda:inputParameter name="payload">
-              <camunda:script scriptFormat="JavaScript">var qpu = execution.getVariable("qpu");
-var programmingLanguage = execution.getVariable("programmingLanguage");
-var credentials = execution.getVariable("ibmq_token");
-var counts = execution.getVariable("counts");
-
-
-var myJson = {"programmingLanguage": programmingLanguage,
-"mitigation_method":"inversion","cm_gen_method": "standard", "qpu": "ibmq_lima", "qubits": qubits, "max_age":100, 
-"credentials":{
-    "token": token
-    
-    },
-"provider": "IBM"};
+              <camunda:script scriptFormat="JavaScript">
+var myJson = {"corr_id": "123",
+"optimizer":"cobyla","initialParameters": [0,0], "returnAddress": "Task_1cl77j3"};
 
 myJson = JSON.stringify(myJson);
 //execution.setVariable("myJson",myJson);
 myJson =myJson;</camunda:script>
             </camunda:inputParameter>
-            <camunda:outputParameter name="counts">
+            <camunda:outputParameter name="optimizerInit">
               <camunda:script scriptFormat="JavaScript">//${S(response)}
 
 var resp = connector.getVariable("response")
