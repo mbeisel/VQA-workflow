@@ -1,0 +1,17 @@
+version: '3'
+services:
+  execution-service:
+    build: ./execution-service
+    ports:
+      - '8085:5000'
+    networks:
+      - quantme
+  optimization-service:
+    build: ./optimization-service
+    ports:
+      - '8087:5000'
+    networks:
+      - quantme
+networks:
+  quantme:
+    driver: bridge
