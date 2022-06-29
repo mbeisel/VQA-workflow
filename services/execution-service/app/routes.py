@@ -78,4 +78,4 @@ def execute_circuit():
     # t.daemon = True
     # t.start()
     # return jsonify({'Status': "Circuit execution process initiated"}), 200
-    return circuit_executor.execute_circuit(quantum_circuit, qpu, credentials, shots, provider)
+    return circuit_executor.execute_circuit(quantum_circuit, qpu, credentials, shots)
