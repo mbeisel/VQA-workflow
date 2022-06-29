@@ -14,11 +14,12 @@
             </camunda:inputParameter>
             <camunda:inputParameter name="url">http://circuit-generation-service:5000/algorithms/tsp/</camunda:inputParameter>
             <camunda:inputParameter name="payload">
-              <camunda:script scriptFormat="JavaScript">var myJson = {"qpu": qpu,"circuit": "circuit", "shots": "shots" 
-"credentials":{
-    "token": credentials
-    },
-};
+              <camunda:script scriptFormat="JavaScript">
+                var adjMatrix = execution.getVariable("adjMatrix");
+                var p = execution.getVariable("p");
+                var betas = execution.getVariable("betas");
+                var gammas = execution.getVariable("gammas");
+                var myJson = {"adjMatrix": adjMatrix,"p": p, "betas": betas, "gammas":gammas};
 
 myJson = JSON.stringify(myJson);
 myJson =myJson</camunda:script>
