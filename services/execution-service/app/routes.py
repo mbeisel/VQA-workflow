@@ -31,14 +31,14 @@ def execute_circuit():
         app.logger.error("Service currently only supports JSON")
         abort(400, "Only Json supported")
 
-    if 'ProgrammingLanguage' not in request.json:
-        app.logger.error("ProgrammingLanguage not defined in request")
-        abort(400, "ProgrammingLanguage not defined in request")
-    programming_language = str(request.json['ProgrammingLanguage'])
-    app.logger.info('ProgrammingLanguage: ' + programming_language)
-    if not programming_language.lower() in ['qiskit', 'openqasm']:
-        app.logger.error("ProgrammingLanguage is not supported. Currently only Qiskit can be used")
-        abort(400, "ProgrammingLanguage is not supported. Currently only Qiskit can be used")
+    # if 'ProgrammingLanguage' not in request.json:
+    #     app.logger.error("ProgrammingLanguage not defined in request")
+    #     abort(400, "ProgrammingLanguage not defined in request")
+    # programming_language = str(request.json['ProgrammingLanguage'])
+    # app.logger.info('ProgrammingLanguage: ' + programming_language)
+    # if not programming_language.lower() in ['qiskit', 'openqasm']:
+    #     app.logger.error("ProgrammingLanguage is not supported. Currently only Qiskit can be used")
+    #     abort(400, "ProgrammingLanguage is not supported. Currently only Qiskit can be used")
 
     # if 'Provider' not in request.json:
     #     app.logger.error("Provider not defined in request")
@@ -49,24 +49,24 @@ def execute_circuit():
     #     app.logger.error("Provider is not supported. Currently only IBM can be used")
     #     abort(400, "Provider is not supported. Currently only IBM can be used")
 
-    if 'QPU' not in request.json:
+    if 'qpu' not in request.json:
         app.logger.error("QPU not defined in request")
         abort(400, "QPU not defined in request")
-    qpu = request.json['QPU']
-    app.logger.info('QPU: ' + qpu)
+    qpu = request.json['qpu']
+    app.logger.info('qpu: ' + qpu)
 
-    if 'Credentials' not in request.json:
+    if 'credentials' not in request.json:
         app.logger.error("AccessToken not defined in request")
         abort(400, "AccessToken not defined in request")
-    credentials = request.json['Credentials']
+    credentials = request.json['credentials']
 
-    if 'QuantumCircuit' not in request.json:
+    if 'circuit' not in request.json:
         app.logger.error("QuantumCircuit not defined in request")
         abort(400, "QuantumCircuit not defined in request")
-    quantum_circuit = request.json['QuantumCircuit']
+    quantum_circuit = request.json['circuit']
 
-    shots = request.json['Shots']
-    if 'Shots' not in request.json:
+    shots = request.json['shots']
+    if 'shots' not in request.json:
         app.logger.info("Using default number of shots (1024)")
         shots = 1024
 

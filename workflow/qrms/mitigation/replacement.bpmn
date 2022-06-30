@@ -15,9 +15,10 @@
             <camunda:inputParameter name="url">http://error-mitigation-service:5000/rem/</camunda:inputParameter>
             <camunda:inputParameter name="payload">
               <camunda:script scriptFormat="JavaScript">
-var qpu = execution.getVariable("ibmq_backend");
-var token = execution.getVariable("ibmq_token");
+var qpu = execution.getVariable("qpu");
+var token = execution.getVariable("credentials");
 var counts = execution.getVariable("counts");
+var maxAge = execution.getVariable("maxAge");
 counts = S(counts);
 counts = counts.elements();
 print(counts);
@@ -69,7 +70,7 @@ print(counts_parsed)
 
 
 var myJson = {"counts": counts_parsed,
-"mitigation_method":"inversion","cm_gen_method": "standard", "qpu": "ibmq_lima", "qubits": qubits, "max_age":100, 
+"mitigation_method":"inversion","cm_gen_method": "standard", "qpu": qpu, "qubits": qubits, "max_age":maxAge, 
 "credentials":{
     "token": token
     
