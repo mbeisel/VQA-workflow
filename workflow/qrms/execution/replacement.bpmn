@@ -33,9 +33,13 @@ myJson =myJson;</camunda:script>
               <camunda:script scriptFormat="JavaScript">
 var resp = connector.getVariable("response")
 print('resp'+ resp);
-var result = S(resp);
-print('result ' + result );
-result;</camunda:script>
+print(typeof(resp));
+resp = JSON.parse(resp)
+var counts = S(JSON.stringify(resp.counts));
+print('result ' + counts);
+counts;
+
+</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
