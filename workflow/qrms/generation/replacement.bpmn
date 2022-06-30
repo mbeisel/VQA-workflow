@@ -71,7 +71,7 @@ print('result ' + result );
                
 qasm = result.prop("circuit");
                 print(qasm);
-                qasm = qasm.value();
+                qasm = S(JSON.stringify({"circuit":qasm.value()}));
 qasm;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>

@@ -17,6 +17,7 @@
               <camunda:script scriptFormat="JavaScript">var qpu = execution.getVariable("qpu");
 var credentials = execution.getVariable("credentials");
 var circuit = execution.getVariable("circuit");
+                circuit = circuit.prop("circuit").value()
 var shots = execution.getVariable("shots");
 
 var myJson = {"qpu": qpu,"circuit": circuit, "shots": shots, "credentials":{
