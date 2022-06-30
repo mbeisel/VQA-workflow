@@ -12,7 +12,7 @@
                 <camunda:entry key="Content-Type">application/json</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
-            <camunda:inputParameter name="url">http://circuit-generation-service:5000/algorithms/tsp/</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://circuit-generation-service:5000/algorithms/tspqaoa/</camunda:inputParameter>
             <camunda:inputParameter name="payload">
               <camunda:script scriptFormat="JavaScript">
                 var adjMatrix = execution.getVariable("adjMatrix");
@@ -25,11 +25,14 @@ myJson = JSON.stringify(myJson);
 myJson =myJson</camunda:script>
             </camunda:inputParameter>
             <camunda:outputParameter name="circuit">
-              <camunda:script scriptFormat="JavaScript">var resp = connector.getVariable("response")
+              <camunda:script scriptFormat="JavaScript">
+var resp = connector.getVariable("response");
 print('resp'+ resp);
+               
 var result = S(resp);
 print('result ' + result );
-result;</camunda:script>
+qasm = result.elements().prop("circuit");
+qasm;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
