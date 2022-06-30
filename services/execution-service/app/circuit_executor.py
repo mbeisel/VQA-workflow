@@ -28,20 +28,21 @@ from qiskit.providers import QiskitBackendNotFoundError, JobError, JobTimeoutErr
 from qiskit.providers.ibmq.api.exceptions import RequestsApiError
 from qiskit.providers.jobstatus import JOB_FINAL_STATES
 from qiskit.test.mock import FakeManhattan
+from qiskit import Aer
 
 from app import app
 
 
-def execute_circuit(quantum_circuit_encoded, qpu, access_token, shots):
+def execute_circuit(circuit, qpu, access_token, shots):
     """Execute the given circuit on the given quantum computer"""
 
     # get qiskit circuit object from Json object containing the base64 encoded circuit
-    circuit = json.loads(quantum_circuit_encoded)['circuit']
     # quantum_circuit = pickle.loads(codecs.decode(circuit.encode(), "base64"))
+    print(circuit)
     quantum_circuit = QuantumCircuit.from_qasm_str(circuit)
 
     if 'simulator' in qpu:
-        ibm_qpu =  FakeManhattan()
+        ibm_qpu = Aer.get_backend('qasm_simulator')
     else:
         ibm_qpu = get_qpu(access_token, qpu)
     if ibm_qpu is None:
@@ -96,7 +97,7 @@ def execute(transpiled_circuit, shots, backend):
         job_status = job.status()
         while job_status not in JOB_FINAL_STATES:
             app.logger.info("The execution is still running")
-            time.sleep(20)
+            time.sleep(10)
             job_status = job.status()
 
         return job.result().get_counts()

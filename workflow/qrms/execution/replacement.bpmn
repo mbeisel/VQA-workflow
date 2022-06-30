@@ -19,7 +19,7 @@ var credentials = execution.getVariable("credentials");
 var circuit = execution.getVariable("circuit");
 var shots = execution.getVariable("shots");
 
-var myJson = {"qpu": qpu,"circuit": "circuit", "shots": "shots", "credentials":{
+var myJson = {"qpu": qpu,"circuit": circuit, "shots": shots, "credentials":{
     "token": credentials
     }
 };
