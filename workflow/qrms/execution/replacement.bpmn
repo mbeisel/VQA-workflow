@@ -19,6 +19,7 @@ var credentials = execution.getVariable("credentials");
 var circuit = execution.getVariable("circuit");
                 circuit = circuit.prop("circuit").value()
 var shots = execution.getVariable("shots");
+                shots = parseInt(shots);
 
 var myJson = {"qpu": qpu,"circuit": circuit, "shots": shots, "credentials":{
     "token": credentials
