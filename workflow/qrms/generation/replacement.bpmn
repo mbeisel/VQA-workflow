@@ -64,7 +64,10 @@ print('resp'+ resp);
                
 var result = S(resp);
 print('result ' + result );
-qasm = result.elements().prop("circuit");
+                print(typeof(result));
+                qasm = result["circuit"];
+                print(qasm)
+//qasm = result.elements().prop("circuit");
 qasm;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
