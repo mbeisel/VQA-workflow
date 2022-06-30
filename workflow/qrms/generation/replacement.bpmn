@@ -28,7 +28,7 @@
                   arr = arr.replace("[","").replace("]","")
                   numbers = arr.split(",")
                   for each (var num in numbers){
-                    new_arr.push(parseFloat(num)
+                    new_arr.push(parseFloat(num))
                   }
                   new_matrix.push(new_arr)
                 }
