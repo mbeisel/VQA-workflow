@@ -18,6 +18,7 @@
 # ******************************************************************************
 
 import json
+import logging
 import time
 from multiprocessing import Process
 from flask import jsonify
@@ -31,16 +32,15 @@ from qiskit import *
 import os
 
 class Optimizer (Process):
-    def __init__(self, corr_id, optimizer, parameters, return_address):
+    def __init__(self, topic, optimizer, parameters):
         super().__init__()
-        self.corr_id = corr_id
+        self.topic = topic
         self.optimizer = optimizer
         self.parameters = parameters
-        self.return_address = return_address
+        self.return_address = None
 
         self.camundaEndpoint = "http://localhost:8080/engine-rest"  # os.environ['CAMUNDA_ENDPOINT']
         self.pollingEndpoint = self.camundaEndpoint + '/external-task'
-        self.topic = self.corr_id
 
 
     def run(self):
@@ -48,12 +48,27 @@ class Optimizer (Process):
 
         def decoyfunction(opt_parameters, *args):
             print('publish' + str(opt_parameters))
-            camunda_callback = requests.post(self.return_address,
-                                             json={"corr_id": self.corr_id, "variables": {
-                                                     "parameters": str(opt_parameters)}})
-            app.logger.info("Callback returned status code: " + str(camunda_callback.status_code))
 
-            self.poll()
+
+
+
+            # send response
+            body = {
+                "workerId": "optimization-service",
+                "variables":
+                    {"initialParameters": {"value": str(opt_parameters), "type": "String"}}
+            }
+            if self.return_address:
+                response = requests.post(self.pollingEndpoint + '/' + self.return_address + '/complete',
+                                     json=body)
+                app.logger.info(response)
+
+            # camunda_callback = requests.post(self.return_address,
+            #                                  json={"corr_id": self.corr_id, "variables": {
+            #                                          "parameters": str(opt_parameters)}})
+            # app.logger.info("Callback returned status code: " + str(camunda_callback.status_code))
+            return self.poll()
+
 
         if self.optimizer.lower() == 'spsa':
             spsa = SPSA(maxiter=200)
@@ -71,34 +86,37 @@ class Optimizer (Process):
         print(response.status_code)
 
     def poll(self):
-        print('Polling for new external tasks at the Camunda engine with URL: ', self.pollingEndpoint)
+        while(True):
+            print('Polling for new external tasks at the Camunda engine with URL: ', self.pollingEndpoint)
 
-        body = {
-            "workerId": "KMeansExecutorService",
-            "maxTasks": 1,
-            "topics":
-                [{"topicName": self.topic,
-                  "lockDuration": 100000000
-                  }]
-        }
+            body = {
+                "workerId": "optimization-service",
+                "maxTasks": 1,
+                "topics":
+                    [{"topicName": self.topic,
+                      "lockDuration": 100000000
+                      }]
+            }
 
-        try:
-            response = requests.post(self.pollingEndpoint + '/fetchAndLock', json=body)
+            try:
+                response = requests.post(self.pollingEndpoint + '/fetchAndLock', json=body)
+                app.logger.info((requests))
+                if response.status_code == 200:
+                    for externalTask in response.json():
+                        print('External task with ID for topic ' + str(externalTask.get('topicName')) + ': ' + str(
+                            externalTask.get('id')))
+                        self.return_address = externalTask.get('id')
+                        variables = externalTask.get('variables')
+                        if externalTask.get('topicName') == self.topic:
+                            if ('objValues' in variables):
+                                if variables.get("objValues").get("type") == "String":
+                                    return float(variables.get("circuits_string").get("value"))
+            except Exception as e:
+                print('Exception during polling!')
+                print(e)
+            time.sleep(3)
 
-            if response.status_code == 200:
-                for externalTask in response.json():
-                    print('External task with ID for topic ' + str(externalTask.get('topicName')) + ': ' + str(
-                        externalTask.get('id')))
-                    variables = externalTask.get('variables')
-                    if externalTask.get('topicName') == self.topic:
-                        if ('objValues' in variables):
-                            if variables.get("objValues").get("type") == "String":
-                                return float(variables.get("circuits_string").get("value"))
-        except Exception as e:
-            print('Exception during polling!')
-            print(e)
-
-        threading.Timer(3, self.poll).start()
+        # threading.Timer(3, self.poll).start()
 
     def download_data(self,url):
         response = urlopen(url)
@@ -109,14 +127,7 @@ class Optimizer (Process):
 
 
 
-# send response
-# body = {
-#     "workerId": "KMeansExecutorService",
-#     "variables":
-#         {"cluster_mapping": {"value": cluster_mapping, "type": "String"}}
-# }
-# response = requests.post(self.pollingEndpoint + '/' + externalTask.get('id') + '/complete',
-#                          json=body)
+
 
 
 

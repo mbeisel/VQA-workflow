@@ -25,6 +25,8 @@ from .optimizer import Optimizer
 
 @app.route('/optimization-service', methods=['POST'])
 def execute_circuit():
+    print(request.json)
+    app.logger.info(request.json)
     """Execute a given quantum circuit on a specified quantum computer."""
 
     app.logger.info('Received Post request to execute circuit...')
@@ -32,11 +34,11 @@ def execute_circuit():
         app.logger.error("Service currently only supports JSON")
         abort(400, "Only Json supported")
 
-    if 'corr_id' not in request.json:
-        app.logger.error("corr_id not defined in request")
-        abort(400, "corr_id not defined in request")
-    corr_id = request.json['corr_id']
-    app.logger.info('corr_id: ' + corr_id)
+    if 'topic' not in request.json:
+        app.logger.error("topic not defined in request")
+        abort(400, "topic not defined in request")
+    topic = request.json['topic']
+    app.logger.info('topic: ' + topic)
 
     if 'optimizer' not in request.json:
         app.logger.error("optimizer not defined in request")
@@ -51,13 +53,7 @@ def execute_circuit():
         app.logger.error("initialParameters not defined in request")
         abort(400, "initialParameters not defined in request")
     initialParameters = request.json['initialParameters']
-    app.logger.info('initialParameters: ' + initialParameters)
-
-    if 'returnAddress' not in request.json:
-        app.logger.error("returnAddress not defined in request")
-        abort(400, "returnAddress not defined in request")
-    returnAddress = request.json['returnAddress']
-    app.logger.info('returnAddress: ' + returnAddress)
+    app.logger.info('initialParameters: ' + str(initialParameters))
 
 
     # Threaded longrunning task version
@@ -65,6 +61,7 @@ def execute_circuit():
     # t.daemon = True
     # t.start()
     # return jsonify({'Status': "Circuit execution process initiated"}), 200
-    process = Optimizer(corr_id, optimizer, initialParameters, returnAddress)
+    process = Optimizer(topic, optimizer, initialParameters)
     process.start()
-    return jsonify('Optimization process for id {} started'.format(corr_id))
+
+    return jsonify('Optimization process for id {} started'.format(topic))
