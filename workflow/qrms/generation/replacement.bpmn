@@ -64,13 +64,14 @@ var resp = connector.getVariable("response");
 print('resp'+ resp);
                 
                
-var result = S(JSON.stringify(resp));
+var result = S(resp);
 print('result ' + result );
                 print(typeof(result));
                // qasm = result["circuit"];
                
-qasm = result.elements().prop("circuit");
-                print(qasm)
+qasm = result.prop("circuit");
+                print(qasm);
+                qasm = qasm.value();
 qasm;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
