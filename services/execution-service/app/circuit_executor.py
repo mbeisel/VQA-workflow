@@ -27,6 +27,7 @@ from qiskit import IBMQ, transpile, assemble, QuantumCircuit
 from qiskit.providers import QiskitBackendNotFoundError, JobError, JobTimeoutError
 from qiskit.providers.ibmq.api.exceptions import RequestsApiError
 from qiskit.providers.jobstatus import JOB_FINAL_STATES
+from qiskit.test.mock import FakeManhattan
 
 from app import app
 
@@ -39,7 +40,10 @@ def execute_circuit(quantum_circuit_encoded, qpu, access_token, shots):
     # quantum_circuit = pickle.loads(codecs.decode(circuit.encode(), "base64"))
     quantum_circuit = QuantumCircuit.from_qasm_str(circuit)
 
-    ibm_qpu = get_qpu(access_token, qpu)
+    if 'simulator' in qpu:
+        ibm_qpu =  FakeManhattan()
+    else:
+        ibm_qpu = get_qpu(access_token, qpu)
     if ibm_qpu is None:
         return jsonify('Unable to load account with given credentials')
         # app.logger.error("Unable to retrieve qpu object with given name and given access token")

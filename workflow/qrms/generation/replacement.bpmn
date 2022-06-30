@@ -52,7 +52,7 @@
                 
                 
                 
-                var myJson = {"adjMatrix": new_matrix,"p": p, "betas": betas, "gammas":gammas};
+                var myJson = {"adj_matrix": new_matrix,"p": p, "betas": betas, "gammas":gammas};
 
 myJson = JSON.stringify(myJson);
 myJson =myJson</camunda:script>
