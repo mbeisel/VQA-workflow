@@ -84,6 +84,8 @@ services:
       - '8087:5000'
     networks:
       - modulo-demo
+    env_file:
+     - ip.env
       
   objective-function-service:
     build: ./services/objective-function-service

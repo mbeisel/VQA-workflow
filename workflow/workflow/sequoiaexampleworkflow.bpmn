@@ -137,26 +137,30 @@ resp;</camunda:script>
                   new_matrix.push(new_arr)
                 }
 
-var counts = execution.getVariable("counts");
-                print(counts)
-                counts = counts.prop("counts").value()
+var counts = execution.getVariable("counts").toString();
+print(counts)
+                
+                counts = JSON.parse(counts)
+                counts = counts["counts"]
                 var objFun = execution.getVariable("objFun");
 
                 var myJson = {"adj_matrix": new_matrix,"counts": counts,"objFun": objFun};
-                print(myJson)
+                
 
 myJson = JSON.stringify(myJson);
+                print(myJson)
 //execution.setVariable("myJson",myJson);
 myJson =myJson;</camunda:script>
             </camunda:inputParameter>
             <camunda:outputParameter name="objValue">
-              <camunda:script scriptFormat="JavaScript">//${S(response)}
-
+              <camunda:script scriptFormat="JavaScript">
 var resp = connector.getVariable("response")
 print('resp'+ resp);
-var result = S(resp);
-print('result ' + result );
-result;</camunda:script>
+print(typeof(resp));
+resp = JSON.parse(resp)
+var objValue = resp.objective_value;
+print('result ' + objValue);
+objValue;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>

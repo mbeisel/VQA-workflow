@@ -7,7 +7,6 @@ from ...model.objective_request import (
     TSPObjectiveFunctionRequestSchema,
 )
 
-from app import app
 
 blp = Blueprint(
     "objective",
@@ -26,7 +25,6 @@ blp = Blueprint(
 )
 @blp.response(200, ObjectiveResponseSchema)
 def encoding(json: TSPObjectiveFunctionRequest):
-    app.logger.info(json)
     if json:
         return objective_service.generate_tsp_objective_response(json)
 

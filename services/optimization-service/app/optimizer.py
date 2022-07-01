@@ -39,7 +39,10 @@ class Optimizer (Process):
         self.parameters = parameters
         self.return_address = None
 
-        self.camundaEndpoint = "http://localhost:8080/engine-rest"  # os.environ['CAMUNDA_ENDPOINT']
+        self.camundaEndpoint = os.environ['CAMUNDA_ENDPOINT']
+        print('endpoint', self.camundaEndpoint)
+        #self.camundaEndpoint = "http://localhost:8080/engine-rest"  # os.environ['CAMUNDA_ENDPOINT']
+
         self.pollingEndpoint = self.camundaEndpoint + '/external-task'
 
 
@@ -47,7 +50,7 @@ class Optimizer (Process):
         print("Starting optimization")
 
         def decoyfunction(opt_parameters, *args):
-            print('publish' + str(opt_parameters))
+            app.logger.info('publish' + str(opt_parameters))
 
 
 
@@ -59,6 +62,7 @@ class Optimizer (Process):
                     {"initialParameters": {"value": str(opt_parameters), "type": "String"}}
             }
             if self.return_address:
+                app.logger.info(self.pollingEndpoint + '/' + self.return_address + '/complete' + ' body: ' +  str(body))
                 response = requests.post(self.pollingEndpoint + '/' + self.return_address + '/complete',
                                      json=body)
                 app.logger.info(response)
@@ -87,6 +91,7 @@ class Optimizer (Process):
 
     def poll(self):
         while(True):
+            app.logger.info('Polling for new external tasks at the Camunda engine with URL: {}'.format(self.pollingEndpoint))
             print('Polling for new external tasks at the Camunda engine with URL: ', self.pollingEndpoint)
 
             body = {
@@ -94,27 +99,29 @@ class Optimizer (Process):
                 "maxTasks": 1,
                 "topics":
                     [{"topicName": self.topic,
-                      "lockDuration": 100000000
+                      "lockDuration": 100000000,
+                      "variables": ["objValue"]
                       }]
             }
 
             try:
                 response = requests.post(self.pollingEndpoint + '/fetchAndLock', json=body)
-                app.logger.info((requests))
                 if response.status_code == 200:
+                    app.logger.info('in 200')
+                    app.logger.info(response.json())
                     for externalTask in response.json():
-                        print('External task with ID for topic ' + str(externalTask.get('topicName')) + ': ' + str(
-                            externalTask.get('id')))
+                        app.logger.info('External task with ID for topic ' + str(externalTask.get('topicName')) + ': ' + str(
+                            externalTask.get('activityId')))
                         self.return_address = externalTask.get('id')
                         variables = externalTask.get('variables')
                         if externalTask.get('topicName') == self.topic:
-                            if ('objValues' in variables):
-                                if variables.get("objValues").get("type") == "String":
-                                    return float(variables.get("circuits_string").get("value"))
+                            if ('objValue' in variables):
+                               app.logger.info(variables)
+                               return float(variables.get("objValue").get("value"))
             except Exception as e:
                 print('Exception during polling!')
                 print(e)
-            time.sleep(3)
+            time.sleep(5)
 
         # threading.Timer(3, self.poll).start()
 
