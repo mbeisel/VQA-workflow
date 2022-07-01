@@ -35,7 +35,7 @@ var resp = connector.getVariable("response")
 print('resp'+ resp);
 print(typeof(resp));
 resp = JSON.parse(resp)
-var counts = S(JSON.stringify(resp.counts));
+var counts = S(JSON.stringify({"counts":resp.counts}));
 print('result ' + counts);
 counts;
 

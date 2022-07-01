@@ -139,7 +139,7 @@ resp;</camunda:script>
 
 var counts = execution.getVariable("counts");
                 print(counts)
-                // counts = counts.prop("counts").value();
+                counts = counts.prop("counts").value()
                 var objFun = execution.getVariable("objFun");
 
                 var myJson = {"adj_matrix": new_matrix,"counts": counts,"objFun": objFun};
