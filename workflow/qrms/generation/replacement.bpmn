@@ -17,8 +17,7 @@
               <camunda:script scriptFormat="JavaScript">
                 var matrix = execution.getVariable("adjMatrix");
                 var p = execution.getVariable("p");
-                var betas = execution.getVariable("betas");
-                var gammas = execution.getVariable("gammas");
+ 								var initialParameters = execution.getVariable("initialParameters");
                 
                 matrix = matrix.substring(1,matrix.length-1).replace(" ", "");
                 matrix = matrix.split("],[");
@@ -33,19 +32,17 @@
                   new_matrix.push(new_arr)
                 }
 
-                betas = betas.substring(1, betas.length-1)
-                betas = betas.split(",")
-                b_array = [];
-                for each (var el in betas) b_array.push(parseFloat(el));
-                betas = b_array 
-
-                gammas = gammas.substring(1, gammas.length-1)
-                gammas = gammas.split(",")
-                g_array = [];
-                for each (var el in gammas) g_array.push(parseFloat(el));
-                gammas = g_array 
                 
-								p = parseInt(p);
+                
+                
+                initialParameters = initialParameters.substring(1, initialParameters.length-1)
+                initialParameters = initialParameters.split(" ")
+                print(initialParameters[0]);
+                p = initialParameters.length/2
+                gammas = initialParameters.slice(0,p);
+                betas = initialParameters.slice(p, initialParameters.length);
+                             
+								// p = parseInt(p);
 
                 
                 
