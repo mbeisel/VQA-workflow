@@ -37,7 +37,7 @@
                 
                 
                 if(initialParameters != null){
-                initialParameters = initialParameters.substring(1, initialParameters.length-1)
+                initialParameters = initialParameters.substring(1, initialParameters.length-1).replace(". ", "").replace(" ", "");
                 initialParameters = initialParameters.split(" ")
                 print(initialParameters[0]);
                 p = initialParameters.length/2

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:quantme="https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1a0cx7a" targetNamespace="http://bpmn.io/schema/bpmn" exporter="QuantME Modeler" exporterVersion="4.5.0-nightly.20220714">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:quantme="https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1a0cx7a" targetNamespace="http://bpmn.io/schema/bpmn" exporter="QuantME Modeler" exporterVersion="4.5.0-nightly.20220630">
   <bpmn:process id="sequoia_tsp_workflow" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="adjMatrix" label="Array containing adj_matrix" type="string" defaultValue="[[0,2,1],[3,0,1],[1,2,0]]" />
+          <camunda:formField id="adjMatrix" label="Array containing adj_matrix" type="string" defaultValue="[[0,1,1],[1,0,1],[1,1,0]]" />
           <camunda:formField id="credentials" label="QPU Credentials" type="string" />
           <camunda:formField id="qpu" label="IBMQ Backend name" type="string" defaultValue="simulator" />
           <camunda:formField id="optimizer" label="optimizer" type="string" defaultValue="cobyla" />
@@ -153,7 +153,8 @@ myJson = JSON.stringify(myJson);
 myJson =myJson;</camunda:script>
             </camunda:inputParameter>
             <camunda:outputParameter name="objValue">
-              <camunda:script scriptFormat="JavaScript">var resp = connector.getVariable("response")
+              <camunda:script scriptFormat="JavaScript">
+var resp = connector.getVariable("response")
 print('resp'+ resp);
 print(typeof(resp));
 resp = JSON.parse(resp)

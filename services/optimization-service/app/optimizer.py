@@ -48,11 +48,17 @@ class Optimizer (Process):
 
     def run(self):
         print("Starting optimization")
+        print(self.parameters)
 
         def decoyfunction(opt_parameters, *args):
+            app.logger.info(opt_parameters[0])
             app.logger.info('publish' + str(opt_parameters))
 
+            opt_parameters_array =[]
+            for parameter in opt_parameters:
+                opt_parameters_array.append(parameter)
 
+            opt_parameters = opt_parameters_array
 
 
             # send response
