@@ -17,18 +17,14 @@
 #  limitations under the License.
 # ******************************************************************************
 
-import json
-import logging
+
 import time
 from multiprocessing import Process
-from flask import jsonify
 from qiskit.algorithms.optimizers import SPSA
 import scipy.optimize as optimize
 from app import app
 import requests
-import threading
 from urllib.request import urlopen
-from qiskit import *
 import os
 
 class Optimizer (Process):
@@ -68,15 +64,10 @@ class Optimizer (Process):
                     {"initialParameters": {"value": str(opt_parameters), "type": "String"}}
             }
             if self.return_address:
-                app.logger.info(self.pollingEndpoint + '/' + self.return_address + '/complete' + ' body: ' +  str(body))
+                app.logger.info(self.pollingEndpoint + '/' + self.return_address + '/complete' + ' body: ' + str(body))
                 response = requests.post(self.pollingEndpoint + '/' + self.return_address + '/complete',
                                      json=body)
                 app.logger.info(response)
-
-            # camunda_callback = requests.post(self.return_address,
-            #                                  json={"corr_id": self.corr_id, "variables": {
-            #                                          "parameters": str(opt_parameters)}})
-            # app.logger.info("Callback returned status code: " + str(camunda_callback.status_code))
             return self.poll()
 
 
@@ -86,16 +77,9 @@ class Optimizer (Process):
         else:
             res = optimize.minimize(decoyfunction, self.parameters, method=self.optimizer)
         print(res)
-
-    def send_error(self,errorCode, externalTaskId):
-        body = {
-            "workerId": "KMeansInitializerService",
-            "errorCode": errorCode
-        }
-        response = requests.post(self.pollingEndpoint + '/' + externalTaskId + '/bpmnError', json=body)
-        print(response.status_code)
-
+        
     def poll(self):
+        polling_timer = 1
         while(True):
             app.logger.info('Polling for new external tasks at the Camunda engine with URL: {}'.format(self.pollingEndpoint))
             print('Polling for new external tasks at the Camunda engine with URL: ', self.pollingEndpoint)
@@ -127,30 +111,6 @@ class Optimizer (Process):
             except Exception as e:
                 print('Exception during polling!')
                 print(e)
-            time.sleep(5)
-
-        # threading.Timer(3, self.poll).start()
-
-    def download_data(self,url):
-        response = urlopen(url)
-        data = response.read().decode('utf-8')
-        return str(data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            time.sleep(polling_timer)
+            if polling_timer < 7:
+                polling_timer = polling_timer+1

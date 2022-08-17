@@ -8,7 +8,7 @@ class costFunction(ABC):
         pass
 
     def computeCosts(self, counts, problem_instance):
-        allCosts = np.array([self.evaluate(parseSolution(x), problem_instance) for x in list(counts.keys())])
+        allCosts = np.array([self.evaluate(x, problem_instance) for x in list(counts.keys())])
         z = zip(list(counts.keys()), list(counts.values()), list(allCosts))
         z = list(z)
         return z
@@ -46,8 +46,10 @@ class TspFunction(costFunction):
 
         AdjMatrix: Adjacency matrix as numpy array
         """
+        print(bitstring, problem_instance, kwargs)
         n = len(problem_instance)
         path = self.path_from_string(bitstring, n)
+        print(path)
         path_length = self.compute_path_length(path + [path[0]], problem_instance)
         return path_length
 
@@ -60,9 +62,16 @@ class TspFunction(costFunction):
         return path
 
     def compute_path_length(self, path, problem_instance):
+        print(path)
+
+        print(list(zip(path[:-1], path[1:])))
+        print(problem_instance)
         length = 0
         for i, j in zip(path[:-1], path[1:]):
-            length += problem_instance[i, j]
+            print(i,j)
+            print(type(i))
+            print(type(j))
+            length += problem_instance[i][j]
         return length
 
 

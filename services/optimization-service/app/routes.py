@@ -18,7 +18,7 @@
 # ******************************************************************************
 import threading
 
-from app import app, optimizer
+from app import app
 from flask import jsonify, abort, request
 from .optimizer import Optimizer
 
@@ -56,11 +56,6 @@ def execute_circuit():
     app.logger.info('initialParameters: ' + str(initialParameters))
 
 
-    # Threaded longrunning task version
-    # t = threading.Thread(target=circuit_executor.execute_circuit, args=(quantum_circuit, qpu, credentials, shots))
-    # t.daemon = True
-    # t.start()
-    # return jsonify({'Status': "Circuit execution process initiated"}), 200
     process = Optimizer(topic, optimizer, initialParameters)
     process.start()
 

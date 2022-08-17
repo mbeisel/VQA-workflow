@@ -25,6 +25,7 @@ blp = Blueprint(
 )
 @blp.response(200, ObjectiveResponseSchema)
 def encoding(json: TSPObjectiveFunctionRequest):
+    print(json)
     if json:
         return objective_service.generate_tsp_objective_response(json)
 

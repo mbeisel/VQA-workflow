@@ -38,7 +38,7 @@
                 
                 if(initialParameters != null){
                 initialParameters = initialParameters.substring(1, initialParameters.length-1).replace(". ", "").replace(" ", "");
-                initialParameters = initialParameters.split(" ")
+                initialParameters = initialParameters.split(",")
                 print(initialParameters[0]);
                 p = initialParameters.length/2
                 gammas = initialParameters.slice(0,p);

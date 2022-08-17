@@ -47,6 +47,9 @@ class TSPObjective:
     @classmethod
     def compute_path_length(cls, path, AdjMatrix):
         length = 0
+        print(path)
+        print(list(zip(path[:-1], path[1:])))
+        print(AdjMatrix)
         for i,j in zip(path[:-1], path[1:]):
             length += AdjMatrix[i,j]
         return length

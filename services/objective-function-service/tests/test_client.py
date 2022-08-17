@@ -1,7 +1,6 @@
 import unittest
 import os, sys
-import json
-import re
+
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_dir)
