@@ -50,7 +50,8 @@ class FlaskClientTestCase(unittest.TestCase):
                                      '1000010000100001': 74,
                                      '1000001000010100': 6,
                                      '1000000101000010': 59},
-                             "objFun": "Expectation"}),
+                             "objFun": "Expectation",
+                             "visualization": "false"}),
             content_type="application/json")
         self.assertEqual(response.status_code, 200)
         print(response.get_json())

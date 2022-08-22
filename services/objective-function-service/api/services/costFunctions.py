@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from ..helperfunctions import *
 import numpy as np
 
-class costFunction(ABC):
+class CostFunction(ABC):
     @abstractmethod
     def evaluate(self, bitstring, problem_instance, **kwargs):
         pass
@@ -13,7 +13,7 @@ class costFunction(ABC):
         z = list(z)
         return z
 
-class MaxCutFunction(costFunction):
+class MaxCutFunction(CostFunction):
     def __init__(self):
         self.cached_graph = None
         self.cached_cut_size = {}
@@ -34,7 +34,7 @@ class MaxCutFunction(costFunction):
         self.cached_cut_size[cut_string] = C
         return C
 
-class TspFunction(costFunction):
+class TspFunction(CostFunction):
     def __init__(self):
         pass
 
@@ -46,10 +46,8 @@ class TspFunction(costFunction):
 
         AdjMatrix: Adjacency matrix as numpy array
         """
-        print(bitstring, problem_instance, kwargs)
         n = len(problem_instance)
         path = self.path_from_string(bitstring, n)
-        print(path)
         path_length = self.compute_path_length(path + [path[0]], problem_instance)
         return path_length
 
@@ -62,15 +60,8 @@ class TspFunction(costFunction):
         return path
 
     def compute_path_length(self, path, problem_instance):
-        print(path)
-
-        print(list(zip(path[:-1], path[1:])))
-        print(problem_instance)
         length = 0
         for i, j in zip(path[:-1], path[1:]):
-            print(i,j)
-            print(type(i))
-            print(type(j))
             length += problem_instance[i][j]
         return length
 
