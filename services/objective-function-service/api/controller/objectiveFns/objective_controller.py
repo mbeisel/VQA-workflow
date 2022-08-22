@@ -5,6 +5,8 @@ from ...model.objective_response import ObjectiveResponseSchema
 from ...model.objective_request import (
     TSPObjectiveFunctionRequest,
     TSPObjectiveFunctionRequestSchema,
+    MaxCutObjectiveFunctionRequest,
+    MaxCutObjectiveFunctionRequestSchema,
 )
 
 
@@ -21,12 +23,30 @@ blp = Blueprint(
     TSPObjectiveFunctionRequestSchema,
     example=dict(adj_matrix=[[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 1], [0, 1, 1, 0]],
                  counts={"1"*16:100,"0"*16:100},
-                 objFun = "Expectation"),
+                 objFun="Expectation",
+                 visualization=True
+                 )
 )
 @blp.response(200, ObjectiveResponseSchema)
-def encoding(json: TSPObjectiveFunctionRequest):
+def tsp(json: TSPObjectiveFunctionRequest):
     print(json)
     if json:
         return objective_service.generate_tsp_objective_response(json)
+
+
+@blp.route("/max-cut", methods=["POST"])
+@blp.arguments(
+    MaxCutObjectiveFunctionRequestSchema,
+    example=dict(adj_matrix=[[0, 1, 1, 0], [1, 0, 1, 1], [1, 1, 0, 1], [0, 1, 1, 0]],
+                 counts={"1"*16:100,"0"*16:100},
+                 objFun="Expectation",
+                 visualization=True
+                 ),
+)
+@blp.response(200, ObjectiveResponseSchema)
+def max_cut(json: MaxCutObjectiveFunctionRequest):
+    print(json)
+    if json:
+        return objective_service.generate_max_cut_objective_response(json)
 
 

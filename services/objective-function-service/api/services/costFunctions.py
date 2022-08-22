@@ -20,6 +20,7 @@ class MaxCutFunction(CostFunction):
         pass
 
     def evaluate(self,  bitstring, problem_instance, **kwargs):
+        problem_instance = np.array(problem_instance)
         n_vertices = problem_instance.shape[0]
         cut_string = ''.join(str(bitstring))
         if cut_string in self.cached_cut_size.keys() and hash(str(problem_instance)) == self.cached_graph:

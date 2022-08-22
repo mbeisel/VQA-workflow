@@ -26,7 +26,6 @@ class TSPObjective:
         avg = 0
         sum_count = 0
         n = len(AdjMatrix)
-        print(counts)
         for bitstring, count in counts.items():
             path = cls.path_from_string(bitstring, n)
             path_length = cls.compute_path_length(path+[path[0]], AdjMatrix)
@@ -47,9 +46,6 @@ class TSPObjective:
     @classmethod
     def compute_path_length(cls, path, AdjMatrix):
         length = 0
-        print(path)
-        print(list(zip(path[:-1], path[1:])))
-        print(AdjMatrix)
         for i,j in zip(path[:-1], path[1:]):
             length += AdjMatrix[i,j]
         return length

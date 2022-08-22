@@ -19,8 +19,7 @@ class FlaskClientTestCase(unittest.TestCase):
         self.app_context.pop()
 
 
-    def test_basis_encoding(self):
-        # Test for single number
+    def test_tsp(self):
         response = self.client.post(
             "/objective/tsp",
             data=json.dumps({"adj_matrix":    [[ 0, 15, 16,  7],
@@ -51,26 +50,27 @@ class FlaskClientTestCase(unittest.TestCase):
                                      '1000001000010100': 6,
                                      '1000000101000010': 59},
                              "objFun": "Expectation",
-                             "visualization": "false"}),
+                             "visualization": "True"}),
             content_type="application/json")
         self.assertEqual(response.status_code, 200)
         print(response.get_json())
-        # self.assertEqual(7, response.get_json().get("n_qubits"))
-        # self.assertTrue(
-        #     'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[7];\nx q[2];\nx q[3];\nx q[6];\n'
-        #     in response.get_json().values()
-        # )
-        #
-        # # Test for list of numbers
-        # response = self.client.post(
-        #     "/encoding/basis",
-        #     data=json.dumps(
-        #         {"vector": [3.14, 2.25], "integral_bits": 3, "fractional_bits": 3}
-        #     ),
-        #     content_type="application/json",
-        # )
-        # self.assertEqual(response.status_code, 200)
-        # self.assertEqual(14, response.get_json().get("n_qubits"))
-        # self.assertTrue(
-        #     'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[14];\nx q[2];\nx q[3];\nx q[6];\nx q[9];\nx q[12];\n'
-        #     in response.get_json().values()
+
+    def test_max_cut(self):
+        response = self.client.post(
+            "/objective/max-cut",
+            data=json.dumps({"adj_matrix":     [[0, 3, 3, 6, 9, 1],
+                                                [3, 0, 4, 4, -8, 4],
+                                                [3, 4, 0, 3, -7, 1],
+                                                [6, 4, 3, 0, -7, 6],
+                                                [9, -8, -7, -7, 0, -5],
+                                                [1, 4, 1, 6, -5, 0]],
+                             "counts": {'100001': 10,
+                                        '011110': 20,
+                                        '100000': 30,
+                                        '010110': 40,
+                                        '110000': 50},
+                             "objFun": "Expectation",
+                             "visualization": "True"}),
+            content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        print(response.get_json())

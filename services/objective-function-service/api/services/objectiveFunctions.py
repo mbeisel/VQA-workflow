@@ -1,14 +1,16 @@
 from abc import ABC, abstractmethod
-from ..helperfunctions import *
+from api.helperfunctions import *
 import numpy as np
 from api.services.costFunctions import TspFunction, MaxCutFunction
+from api.constants import *
 
 class objectiveFunction(ABC):
     def __init__(self, cost_function):
-        if cost_function.lower() == "tsp":
+        if cost_function.lower() == TSP:
             self.cost_function = TspFunction()
-        elif cost_function.lower() == "maxcut":
+        elif cost_function.lower() == MAX_CUT:
             self.cost_function = MaxCutFunction()
+
         self.counts_cost = None
         pass
 
@@ -24,7 +26,6 @@ class F_EE(objectiveFunction):
 
     def evaluate(self, counts, problem_instance):
         self.counts_cost = self.cost_function.computeCosts(counts, problem_instance)
-        print(self.counts_cost)
         n_samples = np.sum(list(counts.values()))
         if n_samples > 0:
             total_objective_value = (np.sum(np.array([self.counts_cost[i][2] * self.counts_cost[i][1] for i in range(len(self.counts_cost))])) / n_samples)

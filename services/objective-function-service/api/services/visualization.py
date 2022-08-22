@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
-from api.helperfunctions import takeSecond, takeFirst, figureToBase64
+from api.helperfunctions import takeSecond, takeFirst, figureToBase64, getSolutionString
 from api.services.costFunctions import TspFunction
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
 from itertools import product
+import networkx as nx
+from matplotlib import cm
+
 
 class Visualization(ABC):
     @abstractmethod
@@ -16,8 +19,34 @@ class MaxCutVisualization(Visualization):
     def __init__(self):
         pass
 
-    def visualize(self, counts, problem_instance, **kwargs):
-        pass
+    def visualize(self, counts, problem_instance, printWeights=True, ax=None, edgeWidth=1.0, node_size=600, font_size=12):
+        solution_string = getSolutionString(counts)
+        figure = plt.figure()
+
+        problem_instance_graph = nx.from_numpy_array(np.array(problem_instance))
+        colors = ['r' if int(bit) == 0 else 'b' for bit in solution_string]
+        axis = ax if ax else plt.axes(frameon=False)
+        pos = nx.circular_layout(problem_instance_graph)
+
+        edgeColors = [w.get('weight') for (u, v, w) in problem_instance_graph.edges(data=True)]
+        nodes = nx.draw_networkx_nodes(problem_instance_graph, pos, node_color=colors, node_size=node_size, alpha=1, ax=axis)
+        edges = nx.draw_networkx_edges(problem_instance_graph, pos, edge_color=edgeColors, edge_cmap=cm.get_cmap("coolwarm"), edge_vmin=-10,
+                                       edge_vmax=10, width=edgeWidth)
+
+        label_dict = {i: list(range(problem_instance_graph.number_of_nodes()))[i] for i in range(0, len(list(range(problem_instance_graph.number_of_nodes()))))}
+        labels = nx.draw_networkx_labels(problem_instance_graph, pos, font_size=font_size,
+                                         labels={n: lab for n, lab in label_dict.items() if n in pos})
+
+        if not ax:
+            plt.colorbar(edges)
+        if printWeights:
+            labels = nx.get_edge_attributes(problem_instance_graph, 'weight')
+            nx.draw_networkx_edge_labels(problem_instance_graph, pos, edge_labels=labels)
+
+        figure_base64 = figureToBase64(figure)
+        plt.close(figure)
+        return figure_base64
+
 
 class TspVisualization(Visualization):
     class TSPVisualization:
@@ -93,8 +122,9 @@ class TspVisualization(Visualization):
                              color=color, linewidth=line_width)
 
             plt.axis("off")
+            figure_base64 = figureToBase64(figure)
             plt.close(figure)
-            return figure
+            return figure_base64
 
 
     def __init__(self):
@@ -106,15 +136,13 @@ class TspVisualization(Visualization):
         n = len(problem_instance)
         vis.generate_instance(n)
 
-        solution = max(counts, key=takeSecond)
-        solution_string = takeFirst(solution)
+        solution_string = getSolutionString(counts)
         solution_path = cost_function.path_from_string(solution_string, n)
         # add last node as first to complete round trip
         solution_path = (solution_path[-1],) + tuple(solution_path)
         vis.add_solution(solution_path)
 
-        figure = vis.draw_solution(full_graph=True)
-        figure_base64 = figureToBase64(figure)
+        figure_base64 = vis.draw_solution(full_graph=True)
         return figure_base64
 
 
