@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
-from ..helperfunctions import takeSecond, takeFirst, figureToBase64
+from api.helperfunctions import takeSecond, takeFirst, figureToBase64
+from api.services.costFunctions import TspFunction
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial.distance import cdist
-from itertools import product, combinations
+from itertools import product
 
 class Visualization(ABC):
     @abstractmethod
@@ -100,31 +101,21 @@ class TspVisualization(Visualization):
         pass
 
     def visualize(self, counts, problem_instance, **kwargs):
+        cost_function = TspFunction()
         vis = self.TSPVisualization()
         n = len(problem_instance)
         vis.generate_instance(n)
+
         solution = max(counts, key=takeSecond)
         solution_string = takeFirst(solution)
-        solution_path = self.path_from_string(solution_string, n)
+        solution_path = cost_function.path_from_string(solution_string, n)
+        # add last node as first to complete round trip
         solution_path = (solution_path[-1],) + tuple(solution_path)
         vis.add_solution(solution_path)
+
         figure = vis.draw_solution(full_graph=True)
         figure_base64 = figureToBase64(figure)
         return figure_base64
-
-    def path_from_string(self, string, amount_nodes):
-        path = [-1] * amount_nodes
-        for i in range(amount_nodes):
-            node_string = string[i * amount_nodes:i * amount_nodes + amount_nodes]
-            node_position = node_string.find('1')
-            path[node_position] = i
-        return path
-
-    def compute_path_length(self, path, problem_instance):
-        length = 0
-        for i, j in zip(path[:-1], path[1:]):
-            length += problem_instance[i][j]
-        return length
 
 
 
