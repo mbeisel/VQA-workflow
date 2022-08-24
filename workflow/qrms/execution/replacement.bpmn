@@ -15,18 +15,26 @@
             <camunda:inputParameter name="url">http://execution-service:5000/execution-service</camunda:inputParameter>
             <camunda:inputParameter name="payload">
               <camunda:script scriptFormat="JavaScript">var qpu = execution.getVariable("qpu");
-var credentials = execution.getVariable("credentials");
-var circuit = execution.getVariable("circuit");
+                var noiseModel = execution.getVariable("noiseModel");
+				var token = execution.getVariable("token");
+				var hub = execution.getVariable("hub");
+				var group = execution.getVariable("group");
+				var project = execution.getVariable("project");
+				var circuit = execution.getVariable("circuit");
                 circuit = circuit.prop("circuit").value()
-var shots = execution.getVariable("shots");
+								var shots = execution.getVariable("shots");
                 shots = parseInt(shots);
+                
+                
+                var myJson = {"qpu": qpu,"circuit": circuit, "shots": shots, "credentials":{
+                    "token": token, "hub": hub, "group": group, "project":project
+                    }
+					, "noiseModel": noiseModel
+                };
+               
+                
 
-var myJson = {"qpu": qpu,"circuit": circuit, "shots": shots, "credentials":{
-    "token": credentials
-    }
-};
-
-myJson = JSON.stringify(myJson);
+                myJson = JSON.stringify(myJson);
 myJson =myJson;</camunda:script>
             </camunda:inputParameter>
             <camunda:outputParameter name="counts">

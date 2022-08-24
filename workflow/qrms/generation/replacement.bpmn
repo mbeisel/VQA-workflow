@@ -17,7 +17,7 @@
               <camunda:script scriptFormat="JavaScript">
                 var matrix = execution.getVariable("adjMatrix");
                 var p = execution.getVariable("p");
- 								var optimizedParameters = execution.getVariable("optimizedParameters");
+ 				var optimizedParameters = execution.getVariable("optimizedParameters");
                 var betas = execution.getVariable("betas");
                 var gammas = execution.getVariable("gammas");
                 
@@ -64,19 +64,19 @@ myJson =myJson</camunda:script>
             <camunda:outputParameter name="circuit">
               <camunda:script scriptFormat="JavaScript">
 var resp = connector.getVariable("response");
-                print(typeof(resp));
-print('resp'+ resp);
-                
-               
-var result = S(resp);
-print('result ' + result );
-                print(typeof(result));
-               // qasm = result["circuit"];
-               
-qasm = result.prop("circuit");
-                print(qasm);
-                qasm = S(JSON.stringify({"circuit":qasm.value()}));
+            print(typeof(resp));
+			print('resp'+ resp);
+			var result = S(resp);  
+			qasm = result.prop("circuit");
+            qasm = S(JSON.stringify({"circuit":qasm.value()}));
 qasm;</camunda:script>
+            </camunda:outputParameter>
+			<camunda:outputParameter name="iterations">
+              <camunda:script scriptFormat="JavaScript">
+var iterations = connector.getVariable("iterations");
+iterations = iterations + 1
+iterations
+</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
