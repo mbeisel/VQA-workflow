@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    API_TITLE = "Objective Function Service API"
+    API_TITLE = "Quantum Execution Service API"
     API_VERSION = "0.1"
     OPENAPI_VERSION = "3.0.2"
     OPENAPI_URL_PREFIX = "/api"
@@ -14,7 +14,7 @@ class Config:
 
     API_SPEC_OPTIONS = {
         "info": {
-            "description": "This is the API Specification of the Objective Function Service",
+            "description": "This is the API Specification of the Quantum Circuit Execution Service.",
         },
         "license": {"name": "Apache v2 License"},
     }

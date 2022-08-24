@@ -5,7 +5,7 @@ from api.services.objectiveFunctions import F_CVaR, F_EE, F_Gibbs
 from api.services.visualization import TspVisualization, MaxCutVisualization
 from api.constants import *
 
-def generate_tsp_objective_response(input: TSPObjectiveFunctionRequest):
+def generate_tsp_objective_response(input):
     adj_matrix = input.get("adj_matrix")
     counts = input.get("counts")
     objFun = input.get("objFun")

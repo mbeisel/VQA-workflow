@@ -19,8 +19,26 @@
 
 from flask import Flask
 import logging
+from config import config
+from flask_smorest import Api
+from app.routes import blp
 
-app = Flask(__name__)
-app.logger.setLevel(logging.DEBUG)
+def create_app(config_name):
+    app = Flask(__name__)
+    app.logger.setLevel(logging.DEBUG)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
 
-from app import routes
+    api = Api(app)
+    api.register_blueprint(blp)
+
+    @app.route("/")
+    def heartbeat():
+        return '<h1>Quantum circuit executor is running</h1> <h3>View the API Docs <a href="/api/swagger-ui">here</a></h3>'
+
+    from app import routes
+
+    return app
+
+
+

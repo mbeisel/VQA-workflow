@@ -16,76 +16,74 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # ******************************************************************************
-import codecs
-import json
-import pickle
-import time
 
+import time
+import qiskit
 from flask import jsonify
-import requests
 from qiskit import IBMQ, transpile, assemble, QuantumCircuit
 from qiskit.providers import QiskitBackendNotFoundError, JobError, JobTimeoutError
+from qiskit.providers.aer import AerSimulator
+from qiskit.providers.aer.noise import NoiseModel
 from qiskit.providers.ibmq.api.exceptions import RequestsApiError
 from qiskit.providers.jobstatus import JOB_FINAL_STATES
-from qiskit.test.mock import FakeManhattan
-from qiskit import Aer
-
-from app import app
 
 
-def execute_circuit(circuit, qpu, access_token, shots):
-    """Execute the given circuit on the given quantum computer"""
+def execute_circuit(input):
+    circuit = input.get("circuit")
+    provider = input.get("provider")
+    qpu = input.get("qpu")
+    credentials = input.get("credentials")
+    shots = input.get("shots")
+    noiseModel = input.get("noiseModel")
 
-    # get qiskit circuit object from Json object containing the base64 encoded circuit
+    if provider.lower() != 'ibm':
+        return 'This service currently only supports the execution of quantum circuits on IBMQ qpus'
+
+    # DEPRECATED: get qiskit circuit object from Json object containing the base64 encoded circuit
     # quantum_circuit = pickle.loads(codecs.decode(circuit.encode(), "base64"))
-    print(circuit)
-    quantum_circuit = QuantumCircuit.from_qasm_str(circuit)
+    try:
+        circuit = QuantumCircuit.from_qasm_str(circuit)
+    except:
+        return 'The quantum circuit has to be provided as an OpenQASM 2.0 String'
 
-    if 'simulator' in qpu:
-        ibm_qpu = Aer.get_backend('qasm_simulator')
+    if noiseModel:
+        noisy_qpu = get_qpu(credentials, noiseModel)
+        noise_model = NoiseModel.from_backend(noisy_qpu)
+        properties = noisy_qpu.properties()
+        configuration = noisy_qpu.configuration()
+        coupling_map = configuration.coupling_map
+        basis_gates = noise_model.basis_gates
+        transpiled_circuit = transpile(circuit, noisy_qpu)
+        measurement_qubits = get_measurement_qubits_from_transpiled_circuit(transpiled_circuit)
+
+        backend = AerSimulator()
+        job = qiskit.execute(transpiled_circuit, backend=backend, coupling_map=coupling_map, basis_gates=basis_gates, noise_model=noise_model, shots=shots, optimization_level=0)
+        result_counts = job.result().get_counts()
     else:
-        ibm_qpu = get_qpu(access_token, qpu)
-    if ibm_qpu is None:
-        return jsonify('Unable to load account with given credentials')
-        # app.logger.error("Unable to retrieve qpu object with given name and given access token")
-        # camunda_callback = requests.post(return_address, json={"messageName": "error_" + correlation_Id, "processVariables": {
-        #     "executionResult": {"value": "Unable to load account with given access token.", "type": "String"}}})
-        # app.logger.info("Callback returned status code: " + str(camunda_callback.status_code))
-        # return
-    transpiled_circuit = transpile(quantum_circuit, backend=ibm_qpu)
+        if 'simulator' in qpu:
+            ibm_qpu = AerSimulator()
+            measurement_qubits = list(range(0, circuit.num_qubits))
+            transpiled_circuit = transpile(circuit, backend=ibm_qpu)
+        else:
+            ibm_qpu = get_qpu(credentials, qpu)
+            transpiled_circuit = transpile(circuit, backend=ibm_qpu)
+            measurement_qubits = get_measurement_qubits_from_transpiled_circuit(transpiled_circuit)
+        result_counts = execute(transpiled_circuit, shots, ibm_qpu)
 
-
-    # TODO get measurement qubit list
-    measured_qubits = list(range(quantum_circuit.num_qubits))
-
-    app.logger.info(
-        "Start executing transpiled circuit with width " + str(transpiled_circuit.num_qubits) + " and depth " + str(
-            transpiled_circuit.depth()))
-    result_counts = execute(transpiled_circuit, shots, ibm_qpu)
-
-    return jsonify({'counts': result_counts, 'meas_qubits': measured_qubits})
-
-    # long running split task
-    # if result_counts is None:
-    #     app.logger.error("Execution failed!")
-    #     camunda_callback = requests.post(return_address, json={"messageName": "error_" + correlation_Id, "processVariables": {
-    #         "executionResult": {"value": "Unable to retrieve results from execution.", "type": "String"}}})
-    #     app.logger.info("Callback returned status code: " + str(camunda_callback.status_code))
-    #     return
-    # app.logger.info("Execution returned the following result counts: " + str(result_counts))
-    #
-    # camunda_callback = requests.post(return_address, json={"messageName": correlation_Id, "processVariables": {
-    #     "executionResult": {"value": str(result_counts), "type": "String"}}})
-    # app.logger.info("Callback returned status code: " + str(camunda_callback.status_code))
+    return jsonify({'counts': result_counts, 'meas_qubits': measurement_qubits})
 
 
 def get_qpu(credentials, qpu):
     """Load account from token. Get backend."""
     try:
-        provider = IBMQ.enable_account(**credentials)
-        backend = provider.get_backend(qpu)
-        return backend
+        try:
+            IBMQ.disable_account()
+        finally:
+            provider = IBMQ.enable_account(**credentials)
+            backend = provider.get_backend(qpu)
+            return backend
     except (QiskitBackendNotFoundError, RequestsApiError):
+        print('Backend could not be retrieved. Backend name or credentials are invalid. Be sure to use the schema credentials: {"token": "YOUR_TOKEN", "hub": "YOUR_HUB", "group": "YOUR GROUP", "project": "YOUR_PROJECT"). Note that "ibm-q/open/main" are assumed as default values for "hub", "group", "project".')
         return None
 
 
@@ -96,10 +94,23 @@ def execute(transpiled_circuit, shots, backend):
 
         job_status = job.status()
         while job_status not in JOB_FINAL_STATES:
-            app.logger.info("The execution is still running")
+            print("The execution is still running")
             time.sleep(10)
             job_status = job.status()
 
         return job.result().get_counts()
     except (JobError, JobTimeoutError):
         return None
+
+def get_measurement_qubits_from_transpiled_circuit(transpiled_circuit):
+    qregs = transpiled_circuit.qregs
+    layout = transpiled_circuit._layout.get_physical_bits()
+
+    mapping = {}
+    for k, v in layout.items():
+        if v.register.name != 'ancilla':
+            mapping[k] = v.index
+            break
+
+    measurement_qubits = list(mapping.keys())
+    return measurement_qubits

@@ -18,64 +18,32 @@
 # ******************************************************************************
 import threading
 
-from app import app, circuit_executor
-from flask import jsonify, abort, request
+from app import circuit_executor
+from flask import abort, request
+from flask_smorest import Blueprint
+from app.model.execution_request import ExecutionRequestSchema, ExecutionRequest
+from app.model.execution_response import ExecutionResponseSchema, ExecutionResponse
 
 
-@app.route('/execution-service', methods=['POST'])
-def execute_circuit():
+blp = Blueprint(
+    "objective",
+    __name__,
+    description="compute objective value from counts",
+)
+
+
+@blp.route("/execution-service", methods=["POST"])
+@blp.arguments(
+    ExecutionRequestSchema,
+    example=dict(circuit="OPENQASM 2.0; include \"qelib1.inc\"; qreg q[4]; creg c[4];x q[0]; x q[2];barrier q;h q[0];cu1(pi/2) q[1],q[0];h q[1];cu1(pi/4) q[2],q[0];cu1(pi/2) q[2],q[1];h q[2];cu1(pi/8) q[3],q[0];cu1(pi/4) q[3],q[1];cu1(pi/2) q[3],q[2];h q[3];measure q -> c;",
+                 provider = "IBM",
+                 qpu = "aer_qasm_simulator",
+                 credentials = {"token": "YOUR TOKEN"},
+                 shots = 1000,
+                 )
+)
+@blp.response(200, ExecutionResponseSchema)
+def execute_circuit(json: ExecutionRequest):
     """Execute a given quantum circuit on a specified quantum computer."""
-
-    app.logger.info('Received Post request to execute circuit...')
-    if not request.json:
-        app.logger.error("Service currently only supports JSON")
-        abort(400, "Only Json supported")
-
-    # if 'ProgrammingLanguage' not in request.json:
-    #     app.logger.error("ProgrammingLanguage not defined in request")
-    #     abort(400, "ProgrammingLanguage not defined in request")
-    # programming_language = str(request.json['ProgrammingLanguage'])
-    # app.logger.info('ProgrammingLanguage: ' + programming_language)
-    # if not programming_language.lower() in ['qiskit', 'openqasm']:
-    #     app.logger.error("ProgrammingLanguage is not supported. Currently only Qiskit can be used")
-    #     abort(400, "ProgrammingLanguage is not supported. Currently only Qiskit can be used")
-
-    # if 'Provider' not in request.json:
-    #     app.logger.error("Provider not defined in request")
-    #     abort(400, "Provider not defined in request")
-    # provider = request.json['Provider']
-    # app.logger.info('Provider: ' + provider)
-    # if not provider.lower() == 'ibm':
-    #     app.logger.error("Provider is not supported. Currently only IBM can be used")
-    #     abort(400, "Provider is not supported. Currently only IBM can be used")
-
-    if 'qpu' not in request.json:
-        app.logger.error("QPU not defined in request")
-        abort(400, "QPU not defined in request")
-    qpu = request.json['qpu']
-    app.logger.info('qpu: ' + qpu)
-
-    if 'credentials' not in request.json:
-        app.logger.error("AccessToken not defined in request")
-        abort(400, "AccessToken not defined in request")
-    credentials = request.json['credentials']
-
-    if 'circuit' not in request.json:
-        app.logger.error("QuantumCircuit not defined in request")
-        abort(400, "QuantumCircuit not defined in request")
-    quantum_circuit = request.json['circuit']
-
-    shots = request.json['shots']
-    if 'shots' not in request.json:
-        app.logger.info("Using default number of shots (1024)")
-        shots = 1024
-
-    app.logger.info("Passed input is valid")
-
-
-    # Threaded longrunning task version
-    # t = threading.Thread(target=circuit_executor.execute_circuit, args=(quantum_circuit, qpu, credentials, shots))
-    # t.daemon = True
-    # t.start()
-    # return jsonify({'Status': "Circuit execution process initiated"}), 200
-    return circuit_executor.execute_circuit(quantum_circuit, qpu, credentials, shots)
+    print("request", json)
+    return circuit_executor.execute_circuit(json)
