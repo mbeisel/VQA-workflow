@@ -9,6 +9,7 @@
           <camunda:formField id="hub" label="IBMQ Hub" type="string" defaultValue="ibm-q" />
           <camunda:formField id="group" label="IBMQ Group" type="string" defaultValue="open" />
           <camunda:formField id="project" label="IBMQ Project" type="string" defaultValue="main" />
+          <camunda:formField id="ibmqUrl" label="IBMQ URL" type="string" defaultValue="https://auth.quantum-computing.ibm.com/api" />
           <camunda:formField id="qpu" label="IBMQ Backend name" type="string" defaultValue="simulator" />
           <camunda:formField id="noiseModel" label="Noise Model" type="string" />
           <camunda:formField id="optimizer" label="optimizer" type="string" defaultValue="cobyla" />

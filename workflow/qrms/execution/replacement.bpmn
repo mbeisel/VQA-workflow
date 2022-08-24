@@ -20,6 +20,7 @@
 				var hub = execution.getVariable("hub");
 				var group = execution.getVariable("group");
 				var project = execution.getVariable("project");
+				var url = execution.getVariable("ibmqUrl");
 				var circuit = execution.getVariable("circuit");
                 circuit = circuit.prop("circuit").value()
 								var shots = execution.getVariable("shots");
@@ -27,7 +28,7 @@
                 
                 
                 var myJson = {"provider": "ibm", "qpu": qpu,"circuit": circuit, "shots": shots, "credentials":{
-                    "token": token, "hub": hub, "group": group, "project":project
+                    "token": token, "hub": hub, "group": group, "project":project, "url":url
                     }
 					, "noiseModel": noiseModel
                 };
@@ -40,11 +41,8 @@ myJson =myJson;</camunda:script>
             <camunda:outputParameter name="counts">
               <camunda:script scriptFormat="JavaScript">
 var resp = connector.getVariable("response")
-print('resp'+ resp);
-print(typeof(resp));
 resp = JSON.parse(resp)
 var counts = S(JSON.stringify({"counts":resp.counts}));
-print('result ' + counts);
 counts;
 
 </camunda:script>
