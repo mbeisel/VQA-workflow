@@ -61,7 +61,7 @@ class Optimizer (Process):
             body = {
                 "workerId": "optimization-service",
                 "variables":
-                    {"initialParameters": {"value": str(opt_parameters), "type": "String"}}
+                    {"optimizedParameters": {"value": str(opt_parameters), "type": "String"}}
             }
             if self.return_address:
                 app.logger.info(self.pollingEndpoint + '/' + self.return_address + '/complete' + ' body: ' + str(body))

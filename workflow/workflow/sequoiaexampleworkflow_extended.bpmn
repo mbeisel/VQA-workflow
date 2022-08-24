@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:quantme="https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1a0cx7a" targetNamespace="http://bpmn.io/schema/bpmn" exporter="QuantME Modeler" exporterVersion="4.5.0-nightly.20220822">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:quantme="https://github.com/UST-QuAntiL/QuantME-Quantum4BPMN" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1a0cx7a" targetNamespace="http://bpmn.io/schema/bpmn" exporter="QuantME Modeler" exporterVersion="4.5.0-nightly.20220823">
   <bpmn:process id="sequoia_tsp_workflow" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:extensionElements>
@@ -90,10 +90,9 @@ myJson = JSON.stringify(myJson);
 myJson =myJson;</camunda:script>
             </camunda:inputParameter>
             <camunda:outputParameter name="optimizerInit">
-              <camunda:script scriptFormat="JavaScript">//${S(response)}
-
+              <camunda:script scriptFormat="JavaScript">
 var resp = connector.getVariable("response")
-print('resp'+ resp);
+                print(resp)
 resp;</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
@@ -119,8 +118,6 @@ resp;</camunda:script>
             <camunda:inputParameter name="url">http://objective-function-service:5000/objective/tsp</camunda:inputParameter>
             <camunda:inputParameter name="payload">
               <camunda:script scriptFormat="JavaScript">var matrix = execution.getVariable("adjMatrix");
-                
-                
                 matrix = matrix.substring(1,matrix.length-1).replace(" ", "");
                 matrix = matrix.split("],[");
 								new_matrix = []
@@ -134,42 +131,29 @@ resp;</camunda:script>
                   new_matrix.push(new_arr)
                 }
 
-var counts = execution.getVariable("counts").toString();
-print(counts)
-                
+								var counts = execution.getVariable("counts").toString();             
                 counts = JSON.parse(counts)
                 counts = counts["counts"]
                 var objFun = execution.getVariable("objFun");
 
                 var myJson = {"adj_matrix": new_matrix,"counts": counts,"objFun": objFun, "visualization": "True"};
-                
-
-myJson = JSON.stringify(myJson);
-                print(myJson)
-//execution.setVariable("myJson",myJson);
+                myJson = JSON.stringify(myJson);
 myJson =myJson;</camunda:script>
             </camunda:inputParameter>
             <camunda:outputParameter name="objValue">
               <camunda:script scriptFormat="JavaScript">var resp = connector.getVariable("response")
-                print('resp'+ resp);
-                print(typeof(resp));
                 resp = JSON.parse(resp)
                 var objValue = resp.objective_value;
-                print('result ' + objValue);
+                print(objValue)
 								objValue;</camunda:script>
             </camunda:outputParameter>
             <camunda:outputParameter name="plot">
               <camunda:script scriptFormat="Groovy">import org.camunda.bpm.engine.variable.value.FileValue
-import org.camunda.bpm.engine.variable.Variables
+								import org.camunda.bpm.engine.variable.Variables
                 import groovy.json.JsonSlurper
-                print(response)
                 def slurper = new JsonSlurper().parseText(response)
-                print("slurper" + slurper.visualization)
-
-String filename = "plot.png";
-
-FileValue typedFileValue = Variables.fileValue(filename).file(slurper.visualization.decodeBase64()).mimeType("application/png").create()
-
+								String filename = "plot.png";
+								FileValue typedFileValue = Variables.fileValue(filename).file(slurper.visualization.decodeBase64()).mimeType("application/png").create()
 typedFileValue</camunda:script>
             </camunda:outputParameter>
           </camunda:inputOutput>
@@ -322,6 +306,9 @@ typedFileValue</camunda:script>
       <bpmndi:BPMNShape id="ServiceTask_0jruw2w_di" bpmnElement="Task_1cl77j3">
         <dc:Bounds x="260" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0d5rjdi_di" bpmnElement="Task_1442y9q">
+        <dc:Bounds x="1120" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_13c00i2_di" bpmnElement="ExclusiveGateway_13c00i2" isMarkerVisible="true">
         <dc:Bounds x="455" y="225" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -336,9 +323,6 @@ typedFileValue</camunda:script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_16yecuv_di" bpmnElement="Task_0n6qtk0">
         <dc:Bounds x="1400" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ServiceTask_0d5rjdi_di" bpmnElement="Task_1442y9q">
-        <dc:Bounds x="1120" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

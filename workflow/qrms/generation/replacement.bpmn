@@ -17,7 +17,7 @@
               <camunda:script scriptFormat="JavaScript">
                 var matrix = execution.getVariable("adjMatrix");
                 var p = execution.getVariable("p");
- 								var initialParameters = execution.getVariable("initialParameters");
+ 								var optimizedParameters = execution.getVariable("optimizedParameters");
                 var betas = execution.getVariable("betas");
                 var gammas = execution.getVariable("gammas");
                 
@@ -33,16 +33,14 @@
                   }
                   new_matrix.push(new_arr)
                 }
-
-                
-                
-                if(initialParameters != null){
-                initialParameters = initialParameters.substring(1, initialParameters.length-1).replace(". ", "").replace(" ", "");
-                initialParameters = initialParameters.split(",")
-                print(initialParameters[0]);
-                p = initialParameters.length/2
-                gammas = initialParameters.slice(0,p);
-                betas = initialParameters.slice(p, initialParameters.length);
+                  
+                if(optimizedParameters != null){
+                optimizedParameters = optimizedParameters.substring(1, optimizedParameters.length-1).replace(". ", "").replace(" ", "");
+                optimizedParameters = optimizedParameters.split(",")
+                print(optimizedParameters[0]);
+                p = optimizedParameters.length/2
+                gammas = optimizedParameters.slice(0,p);
+                betas = optimizedParameters.slice(p, optimizedParameters.length);
                 } else{
                  betas = betas.substring(1, betas.length-1)
                 betas = betas.split(",")
@@ -57,11 +55,7 @@
                 gammas = g_array 
 								p = parseInt(p);
 								}
-                
-                
-                
-                
-                
+  
                 var myJson = {"adj_matrix": new_matrix,"p": p, "betas": betas, "gammas":gammas};
 
 myJson = JSON.stringify(myJson);
