@@ -55,6 +55,14 @@ var resp = connector.getVariable("response")
 								meas_qubits;
 </camunda:script>
             </camunda:outputParameter>
+            <camunda:outputParameter name="circuitDepthTranspiled">
+              <camunda:script scriptFormat="JavaScript">
+var resp = connector.getVariable("response")
+                resp = JSON.parse(resp)
+                var circuitDepthTranspiled = resp.circuit_depth_transpiled;
+								circuitDepthTranspiled;
+</camunda:script>
+            </camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
