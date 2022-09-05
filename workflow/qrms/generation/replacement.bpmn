@@ -71,6 +71,22 @@ var resp = connector.getVariable("response");
             qasm = S(JSON.stringify({"circuit":qasm.value()}));
 qasm;</camunda:script>
             </camunda:outputParameter>
+            <camunda:outputParameter name="circuitDepthUntranspiled">
+              <camunda:script scriptFormat="JavaScript">
+var resp = connector.getVariable("response")
+                resp = JSON.parse(resp)
+                var circuitDepthUntranspiled = resp.depth;
+                print(circuitDepthUntranspiled)
+								circuitDepthUntranspiled;</camunda:script>
+            </camunda:outputParameter>
+                        <camunda:outputParameter name="circuitNumQubits">
+              <camunda:script scriptFormat="JavaScript">
+var resp = connector.getVariable("response")
+                resp = JSON.parse(resp)
+                var circuitNumQubits = resp.n_qubits;
+                print(circuitNumQubits)
+								circuitNumQubits;</camunda:script>
+            </camunda:outputParameter>
 			<camunda:outputParameter name="iterations">
               <camunda:script scriptFormat="JavaScript">
 var iterations = connector.getVariable("iterations");
